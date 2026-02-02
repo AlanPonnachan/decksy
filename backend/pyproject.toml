@@ -1,0 +1,78 @@
+[project]
+name = "better-presenton-backend"
+version = "0.1.0"
+description = "AI Presentation Generator API"
+authors = [{ name = "Alan Ponnachan", email = "" }]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.7.0",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.9",
+    # The RAG Stack
+    "docling>=1.0.0",   # PDF Parsing
+    "chromadb>=0.4.0",  # Vector Store
+    "openai>=1.10.0",   # LLM Client
+    # Utils
+    "aiohttp>=3.9.0",
+    "logfire>=0.46.0",  # Pydantic's logging tool (optional, but great)
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.3.0",
+    "mypy>=1.9.0",
+    "pyright>=1.1.350",
+    "pre-commit>=3.6.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# --- RUFF CONFIGURATION (Linting & Formatting) ---
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+include = ["app/**/*.py", "tests/**/*.py"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort (imports)
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+]
+ignore = [
+    "N805", # Allow first argument of method to be something other than self (for Pydantic validators)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+# --- PYRIGHT CONFIGURATION (Type Checking) ---
+[tool.pyright]
+pythonVersion = "3.10"
+typeCheckingMode = "basic"  # Start with 'basic', move to 'strict' later
+include = ["app", "tests"]
+venvPath = "."
+venv = ".venv"
+
+# --- MYPY CONFIGURATION (Strict Type Checking) ---
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+exclude = ["venv", ".venv"]
+
+# --- PYTEST CONFIGURATION ---
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
